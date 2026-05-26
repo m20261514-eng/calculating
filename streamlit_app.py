@@ -91,4 +91,24 @@ p2 = str(st.session_state.inputs[1]) if len(st.session_state.inputs) > 1 else " 
 if st.session_state.status == "hint": p1 = f"<span class='hint-num'>{st.session_state.factor1}</span>"
 st.markdown(f"<div class='quiz-box'>{st.session_state.target_product} = [ {p1} ] × [ {p2} ]</div>", unsafe_allow_html=True)
 
-# 6. 휴대폰 스타일 3x3 키패
+# 6. 휴대폰 스타일 3x3 키패드
+if st.session_state.status in ["playing", "hint"]:
+    rows = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+    for row in rows:
+        cols = st.columns(3)
+        for i, num in enumerate(row):
+            if cols[i].button(str(num), key=f"k_{num}"):
+                st.session_state.inputs.append(num)
+                if len(st.session_state.inputs) == 2:
+                    if st.session_state.inputs[0] * st.session_state.inputs[1] == st.session_state.target_product:
+                        st.session_state.status = "success"
+                        st.session_state.score += 1
+                        st.session_state.gold += random.randint(8, 13)
+                    else:
+                        st.session_state.status = "hint"
+                        st.session_state.inputs = [st.session_state.factor1]
+                    st.rerun()
+
+if st.session_state.status == "success":
+    st.success("✅ 정답! 자동으로 다음 문제로 넘어갑니다...")
+    time.sleep(1.5); next_question(); st.rerun()
