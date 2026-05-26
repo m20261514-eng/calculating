@@ -5,7 +5,7 @@ import time
 # 1. 페이지 설정
 st.set_page_config(page_title="신비의 알 역곱셈 게임", page_icon="🥚", layout="centered")
 
-# 디자인 & 애니메이션 효과 강화 (광채 및 떨림 효과)
+# 디자인 & 애니메이션 효과 CSS (가로로 긴 버튼 스타일 적용)
 st.markdown("""
     <style>
     .stApp { background-color: #FFFDF0; }
@@ -19,15 +19,23 @@ st.markdown("""
     }
     .hint-num { color: #FF4B4B !important; }
     
-    /* 3x3 스마트 키패드 버튼 (큼직하게!) */
+    /* 3x3 가로로 긴 직사각형 키패드 버튼 */
     .stButton>button {
-        font-size: 32px !important; border-radius: 20px !important;
+        font-size: 30px !important; border-radius: 15px !important;
         background-color: #FFD93D !important; color: #4A4A4A !important;
-        height: 85px !important; width: 100% !important;
-        box-shadow: 0px 6px 0px #E6C229 !important; font-weight: bold !important;
-        transition: all 0.1s ease; margin-bottom: 10px;
+        height: 55px !important; /* 세로를 줄여서 가로로 긴 직사각형 완성 */
+        width: 100% !important;
+        box-shadow: 0px 5px 0px #E6C229 !important; font-weight: bold !important;
+        transition: all 0.1s ease; margin-bottom: 8px;
     }
-    .stButton>button:active { transform: translateY(4px); box-shadow: 0px 2px 0px #E6C229 !important; }
+    .stButton>button:active { transform: translateY(3px); box-shadow: 0px 2px 0px #E6C229 !important; }
+    
+    /* 지우기 버튼 전용 스타일 (주황색으로 포인트를 줘서 찾기 쉽게 함) */
+    div[data-testid="stBlock"] button:contains("지우기") {
+        background-color: #FF9233 !important;
+        color: white !important;
+        box-shadow: 0px 5px 0px #DD6B11 !important;
+    }
     
     /* 등급별 화려한 효과 */
     .rare-glow {
@@ -91,32 +99,76 @@ with st.expander("🥚 [신비의 알뽑기 상점]", expanded=False):
 
 st.write("---")
 
-# 4. 문제 박스
-p1 = str(st.session_state.inputs[0]) if len(st.session_state.inputs) > 0 else " ? "
-p2 = str(st.session_state.inputs[1]) if len(st.session_state.inputs) > 1 else " ? "
-if st.session_state.status == "hint": p1 = f"<span class='hint-num'>{st.session_state.factor1}</span>"
+# 4. 문제 박스 (실시간 누른 숫자 반영 로직 통합)
+p1 = " ? "
+p2 = " ? "
+
+if st.session_state.status == "playing":
+    if len(st.session_state.inputs) >= 1:
+        p1 = str(st.session_state.inputs[0])
+    if len(st.session_state.inputs) >= 2:
+        p2 = str(st.session_state.inputs[1])
+elif st.session_state.status == "hint":
+    # 힌트 모드일 때는 첫 글자가 무조건 빨간색 힌트 숫자로 고정
+    p1 = f"<span class='hint-num'>{st.session_state.factor1}</span>"
+    if len(st.session_state.inputs) >= 2:
+        p2 = str(st.session_state.inputs[1])
+
 st.markdown(f"<div class='quiz-box'>{st.session_state.target_product} = [ {p1} ] × [ {p2} ]</div>", unsafe_allow_html=True)
 
-# 5. 3x3 스마트 키패드 (항상 상태가 playing/hint일 때 보임)
+
+# 5. 스마트 3x3 키패드 + 하단 지우기 버튼
 if st.session_state.status in ["playing", "hint"]:
     st.write("👇 **곱할 두 숫자를 순서대로 누르세요!**")
+    
+    # 1 ~ 9 배열 출력
     keys = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     for row in keys:
         cols = st.columns(3)
         for i, val in enumerate(row):
-            if cols[i].button(str(val), key=f"key_{val}"):
-                st.session_state.inputs.append(val)
-                if len(st.session_state.inputs) == 2:
-                    if st.session_state.inputs[0] * st.session_state.inputs[1] == st.session_state.target_product:
-                        st.session_state.status = "success"
-                        st.session_state.score += 1
-                        st.session_state.gold += random.randint(8, 13)
-                    else:
-                        st.session_state.status = "hint"
-                        st.session_state.inputs = [st.session_state.factor1]
-                    st.rerun()
+            if cols[i].button(str(val), key=f"key_{val}", use_container_width=True):
+                # 숫자는 최대 2개까지만 쌓이도록 제한
+                if len(st.session_state.inputs) < 2:
+                    st.session_state.inputs.append(val)
+                    st.rerun() # 실시간으로 상단 칸에 숫자가 보이도록 즉시 새로고침
 
-# 6. 정답 처리 및 자동 다음 문제
+    # 🛑 제일 하단에 가로로 꽉 찬 [지우기] 버튼 배치
+    if st.button("⌫ 한 글자 지우기", use_container_width=True):
+        if st.session_state.status == "playing":
+            if len(st.session_state.inputs) > 0:
+                st.session_state.inputs.pop() # 가장 마지막에 넣은 숫자 제거
+                st.rerun()
+        elif st.session_state.status == "hint":
+            # 힌트 모드일 때는 두 번째 숫자(index 1)만 지울 수 있게 방어
+            if len(st.session_state.inputs) == 2:
+                st.session_state.inputs.pop()
+                st.rerun()
+
+
+# 6. 최종 정답 제출 검증 로직 (숫자 2개가 꽉 찼을 때만 작동)
+if st.session_state.status in ["playing", "hint"] and len(st.session_state.inputs) == 2:
+    # 연산 처리를 위해 잠깐 대기 조절 (학생이 숫자를 0.4초간 눈으로 확인한 후 정답 판정으로 넘어가게 설계)
+    time.sleep(0.4)
+    
+    ans1, ans2 = st.session_state.inputs
+    if ans1 * ans2 == st.session_state.target_product:
+        st.session_state.status = "success"
+        st.session_state.score += 1
+        st.session_state.gold += random.randint(8, 13)
+        st.rerun()
+    else:
+        if st.session_state.status == "playing":
+            st.session_state.status = "hint"
+            # 힌트 모드로 진입하면 첫 자리는 강제로 정답 숫자로 채워줌
+            st.session_state.inputs = [st.session_state.factor1]
+        else:
+            # 힌트 상태에서도 틀리면 실패 처리 없이 숫자를 리셋하여 재시도 기회 제공
+            st.session_state.inputs = [st.session_state.factor1]
+        st.rerun()
+
+# 7. 정답 연출 및 자동 다음 문제 전환
 if st.session_state.status == "success":
-    st.success("✅ 정답! 자동으로 다음 문제로 넘어갑니다...")
-    time.sleep(1.5); next_question(); st.rerun()
+    st.success("✅ 정답입니다! 멋져요! 잠시 후 다음 문제로 넘어갑니다...")
+    time.sleep(1.8)
+    next_question()
+    st.rerun()
