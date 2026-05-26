@@ -85,13 +85,13 @@ with st.expander("🥚 [신비의 알뽑기 상점]", expanded=False):
             st.session_state.gold -= 100
             rand = random.random()
             if rand < 0.7:
-                grade, animal = "일반", random.choice(["🍼 아기오리", "🐥 병아리", "🐹 햄스터"])
+                grade, animal = "일반", random.choice(["🍼 아기오리", "🐥 병아리", "🐹 햄스터", "🐰 토끼", "🦔 도치"])
                 st.session_state.egg_anim = f"🥚 일반 등급: [{animal}]이 탄생했어요!"
             elif rand < 0.95:
-                grade, animal = "희귀", random.choice(["🦊 불꽃여우", "🐱 우주고양이", "🦄 페가수스"])
+                grade, animal = "희귀", random.choice(["🦊 불꽃여우", "🐱 우주고양이", "🦄 페가수스", "🐼 푸바오", "🐨 코알라", "🐺 은빛 늑대"])
                 st.snow(); st.session_state.egg_anim = f"<div class='rare-glow'>✨ 희귀 등장! [{animal}] ✨</div>"
             else:
-                grade, animal = "전설", random.choice(["🐲 황금용", "🦄 유니콘", "🦁 사자왕"])
+                grade, animal = "전설", random.choice(["🐲 황금용", "🦄 레인보우 유니콘", "🦁 사자왕", "🐋 거대 고래", "🦊 구미호"])
                 st.balloons(); st.session_state.egg_anim = f"<div class='legend-glow'>👑 전설 강림! [{animal}] 👑</div>"
             if animal not in st.session_state.collection: st.session_state.collection.append(animal)
         else: st.error("골드가 부족해요! 문제를 더 풀어보세요.")
