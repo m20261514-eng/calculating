@@ -107,4 +107,52 @@ if st.session_state.status in ["playing", "hint"]:
     if st.session_state.status == "playing":
         st.write("👇 **곱할 두 숫자를 순서대로 눌러주세요!**")
     else:
-        st.warning(f"💡 **틀렸지만 괜찮아요! 힌트 찬스!** 첫 번째 숫자는 빨간색 **{st.session_state.factor}
+        st.warning(f"💡 **틀렸지만 괜찮아요! 힌트 찬스!** 첫 번째 숫자는 빨간색 **{st.session_state.factor1}** 이에요. 곱해서 {st.session_state.target_product}가 되는 나머지 숫자를 찾아 누르세요!")
+    
+    # 4열씩 버튼 배치 (2~9)
+    col1, col2, col3, col4 = st.columns(4)
+    buttons = [2, 3, 4, 5, 6, 7, 8, 9]
+    
+    for i, num in enumerate(buttons):
+        current_col = [col1, col2, col3, col4][i % 4]
+        with current_col:
+            if st.button(str(num), key=f"btn_{num}"):
+                st.session_state.inputs.append(num)
+                
+                # [일반 모드] 두 숫자를 다 누르면 정답 검증
+                if st.session_state.status == "playing":
+                    if len(st.session_state.inputs) == 2:
+                        ans1, ans2 = st.session_state.inputs
+                        if ans1 * ans2 == st.session_state.target_product:
+                            st.session_state.status = "success"
+                            st.session_state.score += 1
+                            st.session_state.total += 1
+                        else:
+                            # ❌ 틀렸을 때 -> 힌트 모드로 전환!
+                            st.session_state.status = "hint"
+                            # 입력값을 첫 번째 정답 숫자로 자동 세팅해서 두 번째 칸만 누르게 유도
+                            st.session_state.inputs = [st.session_state.factor1]
+                        st.rerun()
+                
+                # [힌트 모드] 힌트를 보고 남은 한 숫자를 누르면 정답 검증
+                elif st.session_state.status == "hint":
+                    if len(st.session_state.inputs) == 2:
+                        ans1, ans2 = st.session_state.inputs
+                        if ans1 * ans2 == st.session_state.target_product:
+                            st.session_state.status = "success"
+                            st.session_state.score += 1  # 힌트 보고 맞춰도 점수 인정! (동기부여)
+                        else:
+                            st.session_state.status = "fail"
+                        st.session_state.total += 1
+                        st.rerun()
+
+# 6. 결과 화면 및 다음 문제 버튼
+if st.session_state.status in ["success", "fail"]:
+    if st.session_state.status == "success":
+        st.success(f"🎉 **정답이에요! 정말 멋져요!** ({st.session_state.factor1} × {st.session_state.factor2} = {st.session_state.target_product})")
+    elif st.session_state.status == "fail":
+        st.error(f"😢 **아쉬워요!** 정답은 {st.session_state.factor1} × {st.session_state.factor2} = {st.session_state.target_product} 이었어요. 다음 문제에 도전해봐요!")
+    
+    if st.button("다음 문제 풀기 ➡️", use_container_width=True):
+        next_question()
+        st.rerun()
