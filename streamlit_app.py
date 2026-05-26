@@ -107,4 +107,4 @@ if st.session_state.status in ["playing", "hint"]:
     if st.session_state.status == "playing":
         st.write("👇 **곱할 두 숫자를 순서대로 눌러주세요!**")
     else:
-        st.warning(f"💡 **틀렸지만 괜찮아요! 힌트 찬스!** 첫 번째 숫자는 빨간색 **{st.session_state.factor
+        st.warning(f"💡 **틀렸지만 괜찮아요! 힌트 찬스!** 첫 번째 숫자는 빨간색 **{st.session_state.factor}
