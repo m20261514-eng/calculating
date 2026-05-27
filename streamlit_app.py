@@ -8,18 +8,21 @@ st.set_page_config(page_title="신비의 알 역곱셈 퀘스트", page_icon="�
 # CSS: 부르르 떨리는 애니메이션 및 기기별 최적화 디자인
 st.markdown("""
     <style>
-    .stApp { background-color: #FFFDF0; }
+    .stApp { background-color: #FFFDF0; color: #222222; }
     
-    /* 퀴즈 박스 (문제창) */
     .quiz-box {
-        background: white; padding: 25px; border-radius: 25px;
-        text-align: center; font-size: 42px; font-weight: bold;
-        color: #4A4A4A; border: 5px solid #FFD93D;
-        box-shadow: 0px 8px 0px #FFD93D; margin-bottom: 25px;
+        background: white;
+        padding: 25px;
+        border-radius: 25px;
+        text-align: center;
+        font-size: 42px;
+        font-weight: bold;
+        color: #222222; /* 더 진한 검정 */
+        border: 5px solid #FFD93D;
+        box-shadow: 0px 8px 0px #FFD93D;
+        margin-bottom: 25px;
     }
     .hint-num { color: #FF4B4B !important; font-weight: bold; }
-
-    /* 알 흔들기 애니메이션 (부르르!) */
     @keyframes vibrate {
         0% { transform: translate(0); }
         20% { transform: translate(-5px, 5px); }
@@ -32,39 +35,62 @@ st.markdown("""
         font-size: 150px; text-align: center;
         display: block; margin: 20px auto;
         animation: vibrate 0.15s linear infinite;
+        color: #444444;
+        text-shadow: 1px 1px 6px #FFD93D44;
     }
-    
-    /* 가챠 결과 카드 */
     .reveal-card {
         background: white; border-radius: 30px; padding: 40px;
         text-align: center; border: 5px solid #FFD93D;
         box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin: 20px 0;
+        color: #222222;
     }
     .animal-icon { font-size: 100px; margin-bottom: 10px; }
-    .animal-name { font-size: 38px; font-weight: bold; color: #4A4A4A; }
+    .animal-name { font-size: 38px; font-weight: bold; color: #1C2833; }
 
-    /* 대시보드 */
     .dashboard {
-        background: #E3FAFC; padding: 15px; border-radius: 20px;
-        border: 2px solid #10B981; font-size: 20px; font-weight: bold;
-        color: #099268; display: flex; justify-content: space-between; margin-bottom: 20px;
+        background: #E3FAFC;
+        padding: 15px;
+        border-radius: 20px;
+        border: 2px solid #10B981;
+        font-size: 20px;
+        font-weight: bold;
+        color: #12615C; /* 더 진한 남색/녹색 */
+        display: flex; justify-content: space-between;
+        margin-bottom: 20px;
+        text-shadow: 0 1px 0 #fff;
     }
 
-    /* 3x3 가로 버튼 (높이를 줄여서 가로로 길게) */
+    /* 버튼 */
     .stButton>button {
-        font-size: 30px !important; border-radius: 15px !important;
-        background-color: #FFD93D !important; color: #4A4A4A !important;
-        height: 60px !important; width: 100% !important;
-        box-shadow: 0px 5px 0px #E6C229 !important; font-weight: bold !important;
+        font-size: 30px !important;
+        border-radius: 15px !important;
+        background-color: #FFD93D !important;
+        color: #222222 !important; /* 진하게 */
+        height: 60px !important;
+        width: 100% !important;
+        box-shadow: 0px 5px 0px #E6C229 !important;
+        font-weight: bold !important;
         transition: all 0.1s ease;
+        border: 2px solid #C0A100 !important;
+        text-shadow: 0 1px 0 #fff8;
     }
     .stButton>button:active { transform: translateY(3px); }
-
-    /* 지우기 버튼 (주황색 포인트) */
     div[data-testid="stBlock"] button:contains("지우기") {
         background-color: #FF9233 !important;
-        color: white !important;
+        color: #fff !important;
         box-shadow: 0px 5px 0px #DD6B11 !important;
+        border: 2px solid #B96009 !important;
+    }
+
+    @media (max-width: 768px) { /* 모바일·패드 대응 */
+        .quiz-box, .reveal-card, .animal-name, .dashboard {
+            font-size: 5vw !important; /* 화면너비 기준 상대크기 */
+        }
+        .stButton>button {
+            font-size: 5vw !important;
+            height: 48px !important;
+        }
+        .animal-icon { font-size: 12vw; }
     }
     </style>
 """, unsafe_allow_html=True)
