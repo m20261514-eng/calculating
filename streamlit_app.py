@@ -5,11 +5,10 @@ import time
 # 1. 페이지 설정
 st.set_page_config(page_title="신비의 알 역곱셈 퀘스트", page_icon="🥚", layout="centered")
 
-# CSS: 부르르 떨리는 애니메이션 및 기기별 최적화 디자인
+# CSS (모바일에서도 키패드 3x3 유지, 기타 디자인 포함)
 st.markdown("""
     <style>
     .stApp { background-color: #FFFDF0; color: #222222; }
-    
     .quiz-box {
         background: white;
         padding: 25px;
@@ -17,7 +16,7 @@ st.markdown("""
         text-align: center;
         font-size: 42px;
         font-weight: bold;
-        color: #222222; /* 더 진한 검정 */
+        color: #222222;
         border: 5px solid #FFD93D;
         box-shadow: 0px 8px 0px #FFD93D;
         margin-bottom: 25px;
@@ -54,18 +53,16 @@ st.markdown("""
         border: 2px solid #10B981;
         font-size: 20px;
         font-weight: bold;
-        color: #12615C; /* 더 진한 남색/녹색 */
+        color: #12615C;
         display: flex; justify-content: space-between;
         margin-bottom: 20px;
         text-shadow: 0 1px 0 #fff;
     }
-
-    /* 버튼 */
     .stButton>button {
         font-size: 30px !important;
         border-radius: 15px !important;
         background-color: #FFD93D !important;
-        color: #222222 !important; /* 진하게 */
+        color: #222222 !important;
         height: 60px !important;
         width: 100% !important;
         box-shadow: 0px 5px 0px #E6C229 !important;
@@ -81,16 +78,28 @@ st.markdown("""
         box-shadow: 0px 5px 0px #DD6B11 !important;
         border: 2px solid #B96009 !important;
     }
-
-    @media (max-width: 768px) { /* 모바일·패드 대응 */
+    /* 키패드 강제 3x3 grid, 모바일에서도 유지 */
+    .streamlit-keypad-row {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        gap: 10px !important;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+    @media (max-width: 768px) {
         .quiz-box, .reveal-card, .animal-name, .dashboard {
-            font-size: 5vw !important; /* 화면너비 기준 상대크기 */
+            font-size: 5vw !important;
         }
         .stButton>button {
             font-size: 5vw !important;
             height: 48px !important;
         }
         .animal-icon { font-size: 12vw; }
+        .streamlit-keypad-row button {
+            min-width: 27vw !important;
+            font-size: 6vw !important;
+        }
     }
     </style>
 """, unsafe_allow_html=True)
@@ -100,10 +109,8 @@ if 'gold' not in st.session_state:
     st.session_state.score, st.session_state.total, st.session_state.gold = 0, 0, 0
     st.session_state.inputs, st.session_state.status = [], "playing"
     st.session_state.collection = []
-    st.session_state.gacha_step = "idle" # idle, shaking, revealed
+    st.session_state.gacha_step = "idle"
     st.session_state.revealed_animal = None
-    
-    # 첫 문제 생성
     st.session_state.factor1 = random.randint(2, 9)
     st.session_state.factor2 = random.randint(2, 9)
     st.session_state.target_product = st.session_state.factor1 * st.session_state.factor2
@@ -114,7 +121,7 @@ def next_question():
     st.session_state.target_product = st.session_state.factor1 * st.session_state.factor2
     st.session_state.inputs, st.session_state.status = [], "playing"
 
-# 3. 동물 데이터 (사용자 요청 리스트)
+# 3. 동물 데이터
 animals_data = {
     "일반": ["🍼 아기오리", "🐥 병아리", "🐹 햄스터", "🐰 토끼", "🦔 도치"],
     "희귀": ["🦊 불꽃여우", "🐱 우주고양이", "🦄 페가수스", "🐼 푸바오", "🐨 코알라", "🐺 은빛 늑대"],
@@ -126,13 +133,10 @@ def start_gacha():
     if st.session_state.gold >= 100:
         st.session_state.gold -= 100
         st.session_state.gacha_step = "shaking"
-        
-        # 등급 결정 (일반 70%, 희귀 25%, 전설 5%)
         rand = random.random()
         if rand < 0.7: tier = "일반"
         elif rand < 0.95: tier = "희귀"
         else: tier = "전설"
-        
         st.session_state.revealed_animal = (tier, random.choice(animals_data[tier]))
         if st.session_state.revealed_animal[1] not in st.session_state.collection:
             st.session_state.collection.append(st.session_state.revealed_animal[1])
@@ -145,32 +149,26 @@ st.title("🎒 신비의 알 역곱셈 퀘스트 🎮")
 # 상단 대시보드
 st.markdown(f"<div class='dashboard'><span>⭐ 점수: {st.session_state.score}</span><span>💰 골드: {st.session_state.gold} G</span></div>", unsafe_allow_html=True)
 
-# 5. 알 부화 연출 화면
+# 5. 알 부화 연출
 if st.session_state.gacha_step == "shaking":
     st.markdown("<span class='egg-shaking'>🥚</span>", unsafe_allow_html=True)
     st.markdown("<h3 style='text-align: center;'>알이 부르르~ 깨지려고 해요!</h3>", unsafe_allow_html=True)
-    time.sleep(2.5) # 2.5초간 흔들기
+    time.sleep(2.5)
     st.session_state.gacha_step = "revealed"
     st.rerun()
-
 elif st.session_state.gacha_step == "revealed":
     tier, animal = st.session_state.revealed_animal
     st.markdown("<div class='reveal-card'>", unsafe_allow_html=True)
-    
-    # 등급별 특수 효과
     if tier == "전설": st.balloons()
     elif tier == "희귀": st.snow()
-    
-    # 동물 정보 출력
     st.markdown(f"<div class='animal-icon'>{animal.split()[0]}</div>", unsafe_allow_html=True)
     st.markdown(f"<div class='animal-name'>[{tier}] {animal.split()[-1]}</div>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
-    
     if st.button("확인 (도감에 저장!)", use_container_width=True):
         st.session_state.gacha_step = "idle"
         st.rerun()
 
-# 6. 기본 게임 모드 (알 부화 중이 아닐 때)
+# 6. 기본 게임 모드
 if st.session_state.gacha_step == "idle":
     with st.expander("🥚 [신비의 알뽑기 상점 열기]", expanded=False):
         st.write("100골드로 새로운 동물을 깨워보세요!")
@@ -179,46 +177,47 @@ if st.session_state.gacha_step == "idle":
             st.write(f"내 도감: {' | '.join(st.session_state.collection)}")
 
     st.write("---")
-
-    # 문제 화면 (실시간 숫자 반영)
     p1 = str(st.session_state.inputs[0]) if len(st.session_state.inputs) >= 1 else " ? "
     p2 = str(st.session_state.inputs[1]) if len(st.session_state.inputs) >= 2 else " ? "
-    
     if st.session_state.status == "hint":
         p1 = f"<span class='hint-num'>{st.session_state.factor1}</span>"
-
     st.markdown(f"<div class='quiz-box'>{st.session_state.target_product} = [ {p1} ] × [ {p2} ]</div>", unsafe_allow_html=True)
 
-    # 3x3 키패드 및 지우기
+    # 키패드 (항상 3x3: PC/모바일 동일)
     if st.session_state.status in ["playing", "hint"]:
-        keys = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-        for row in keys:
-            cols = st.columns(3)
-            for i, val in enumerate(row):
-                if cols[i].button(str(val), key=f"key_{val}", use_container_width=True):
-                    if len(st.session_state.inputs) < 2:
-                        st.session_state.inputs.append(val)
-                        st.rerun()
-
-        if st.button("⌫ 지우기", use_container_width=True):
+        keypad = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+        for row in keypad:
+            cols = st.columns(3, gap="small")
+            with st.container():
+                for i, val in enumerate(row):
+                    if cols[i].button(str(val), key=f"key_{row[0]}_{val}_{len(st.session_state.inputs)}", use_container_width=True):
+                        if len(st.session_state.inputs) < 2:
+                            st.session_state.inputs.append(val)
+                            st.rerun()
+        # 마지막 줄 - 지우기 버튼만 단독
+        st.markdown('<div class="streamlit-keypad-row">', unsafe_allow_html=True)
+        if st.button("⌫ 지우기", key="del_btn", use_container_width=False):
             if len(st.session_state.inputs) > 0:
                 if st.session_state.status == "playing" or (st.session_state.status == "hint" and len(st.session_state.inputs) == 2):
                     st.session_state.inputs.pop()
                     st.rerun()
+        st.markdown("</div>", unsafe_allow_html=True)
 
-    # 정답 검증 로직 (자동 넘어가기 포함)
+    # 정답 검증
     if len(st.session_state.inputs) == 2:
-        time.sleep(0.5) # 숫자를 잠시 확인
+        time.sleep(0.5)
         ans1, ans2 = st.session_state.inputs
         if ans1 * ans2 == st.session_state.target_product:
-            st.success(f"✅ 정답! {random.randint(8, 13)} 골드를 얻었습니다! 💰")
+            get_gold = random.randint(8, 13)
+            st.success(f"✅ 정답! {get_gold} 골드를 얻었습니다! 💰")
             st.session_state.score += 1
-            st.session_state.gold += random.randint(8, 13)
+            st.session_state.gold += get_gold
             st.session_state.total += 1
             time.sleep(1.8)
             next_question()
             st.rerun()
         else:
+            # 힌트 단계
             if st.session_state.status == "playing":
                 st.session_state.status = "hint"
                 st.session_state.inputs = [st.session_state.factor1]
