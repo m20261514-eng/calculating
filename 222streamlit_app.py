@@ -5,7 +5,7 @@ import time
 # 1. 페이지 설정
 st.set_page_config(page_title="신비의 알 나눗셈 퀘스트", page_icon="🥚", layout="centered")
 
-# CSS (모바일 3x3 유지 및 기존 디자인 똑같이 적용)
+# CSS (모바일 3x3 유지 및 디자인 설정)
 st.markdown("""
     <style>
     .stApp { background-color: #FFFDF0; color: #222222; }
@@ -21,7 +21,16 @@ st.markdown("""
         box-shadow: 0px 8px 0px #FFD93D;
         margin-bottom: 25px;
     }
-    .hint-num { color: #FF4B4B !important; font-weight: bold; }
+    .hint-box {
+        color: #FF4B4B !important;
+        font-size: 28px !important;
+        font-weight: bold;
+        margin-top: 10px;
+        background-color: #FFEBEB;
+        padding: 10px;
+        border-radius: 15px;
+        border: 2px dashed #FF4B4B;
+    }
     @keyframes vibrate {
         0% { transform: translate(0); }
         20% { transform: translate(-5px, 5px); }
@@ -104,12 +113,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 2. 세션 상태 및 나눗셈 문제 생성 로직
-# 💡 자연스럽게 떨어지는 나눗셈을 위해 곱셈을 먼저 한 뒤 나누는 방식을 씁니다.
 def make_division_question():
-    # 예: 6과 7을 뽑으면 -> 나누어지는 수(자연수)는 42가 됨
-    divisor = random.randint(2, 9)       # 나누는 수 (예: 6)
-    answer = random.randint(2, 9)        # 실제 정답 (예: 7)
-    dividend = divisor * answer          # 나누어지는 수 (예: 42)
+    divisor = random.randint(2, 9)       # 나누는 수 (예: 7)
+    answer = random.randint(2, 9)        # 실제 정답 (예: 8)
+    dividend = divisor * answer          # 나누어지는 수 (예: 56)
     
     st.session_state.dividend = dividend
     st.session_state.divisor = divisor
@@ -131,12 +138,12 @@ if 'is_answered' not in st.session_state:
 def next_question():
     make_division_question()
 
-# 키패드 콜백 함수 (나눗셈 버전: 정답이 1자리수이므로 1번만 누르면 즉시 잠금 및 정답체크)
+# 키패드 콜백 함수
 def press_key(val):
     if st.session_state.is_answered:
         return
     st.session_state.inputs.append(val)
-    st.session_state.is_answered = True # 숫자 누르자마자 연타 방지 락 가동
+    st.session_state.is_answered = True 
 
 def press_delete():
     if st.session_state.is_answered:
@@ -157,7 +164,7 @@ def start_gacha():
         st.session_state.gold -= 100
         st.session_state.gacha_step = "shaking"
         rand = random.random()
-        if rand < 0.8: tier = "일반"
+        if rand < 0.7: tier = "일반"
         elif rand < 0.95: tier = "희귀"
         else: tier = "전설"
         st.session_state.revealed_animal = (tier, random.choice(animals_data[tier]))
@@ -201,14 +208,16 @@ if st.session_state.gacha_step == "idle":
 
     st.write("---")
     
-    # 📺 문제 보여주기 양식 변형 (예: 42 ÷ 6 = [ ? ])
+    # 문제 보여주기 양식 (예: 56 ÷ 7 = [ ? ])
     p_ans = str(st.session_state.inputs[0]) if len(st.session_state.inputs) >= 1 else " ? "
-    
-    # 힌트 모드일 때는 정답 슬쩍 보여주기 대신 안내 문구 띄우기용 활용 가능
+    st.markdown(f"<div class='quiz-box'>{st.session_state.dividend} ÷ {st.session_state.divisor} = [ {p_ans} ]</div>", unsafe_allow_html=True)
+
+    # 💡 [변경포인트] 오답을 적었을 때, 퀴즈 박스 아래에 연관 곱셈식 힌트를 출력합니다.
     if st.session_state.status == "hint":
-        st.markdown(f"<div class='quiz-box'>{st.session_state.dividend} ÷ {st.session_state.divisor} = [ <span class='hint-num'>{st.session_state.correct_answer}</span> ]</div>", unsafe_allow_html=True)
-    else:
-        st.markdown(f"<div class='quiz-box'>{st.session_state.dividend} ÷ {st.session_state.divisor} = [ {p_ans} ]</div>", unsafe_allow_html=True)
+        div_num = st.session_state.divisor
+        ans_num = st.session_state.correct_answer
+        total_num = st.session_state.dividend
+        st.markdown(f"<div class='hint-box'>💡 힌트 곱셈식: {div_num} × {ans_num} = {total_num}</div>", unsafe_allow_html=True)
 
     # 키패드 고정 렌더링
     if st.session_state.status in ["playing", "hint"]:
@@ -233,7 +242,6 @@ if st.session_state.gacha_step == "idle":
         time.sleep(0.5)
         user_answer = st.session_state.inputs[0]
         
-        # 입력한 값이 진짜 정답과 같은지 비교
         if user_answer == st.session_state.correct_answer:
             get_gold = random.randint(8, 13)
             st.success(f"✅ 정답! {get_gold} 골드를 얻었습니다! 💰")
@@ -244,11 +252,12 @@ if st.session_state.gacha_step == "idle":
             next_question()
             st.rerun()
         else:
-            # 틀렸을 시 힌트 모드로 전환되어 정답이 노출됨
-            st.error("❌ 에러! 정답을 확인하고 다시 풀어보세요!")
+            # 💡 틀렸을 시 처리 변경: 빨간색 곱셈식 박스를 2.8초 동안 노출하고 다시 풀게 함
+            st.error("❌ 틀렸습니다! 아래 곱셈 힌트를 확인해 보세요.")
             st.session_state.status = "hint"
-            time.sleep(2.0) # 힌트 볼 시간 준 뒤
-            st.session_state.inputs = []
+            time.sleep(2.8) # 곱셈식을 머릿속으로 읽어볼 충분한 시간을 줍니다.
+            
+            st.session_state.inputs = []      # 입력창 초기화
             st.session_state.status = "playing" # 다시 플레이 상태로
             st.session_state.is_answered = False 
             st.rerun()
