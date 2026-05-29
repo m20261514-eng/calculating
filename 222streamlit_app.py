@@ -5,7 +5,7 @@ import time
 # 1. 페이지 설정
 st.set_page_config(page_title="신비의 알 나눗셈 퀘스트", page_icon="🥚", layout="centered")
 
-# CSS (모바일 3x3 유지 및 디자인 설정)
+# CSS (모바일 3x3 및 힌트 박스 디자인 포함)
 st.markdown("""
     <style>
     .stApp { background-color: #FFFDF0; color: #222222; }
@@ -23,13 +23,16 @@ st.markdown("""
     }
     .hint-box {
         color: #FF4B4B !important;
-        font-size: 28px !important;
+        font-size: 32px !important;
         font-weight: bold;
-        margin-top: 10px;
+        text-align: center;
+        margin-top: 15px;
+        margin-bottom: 20px;
         background-color: #FFEBEB;
-        padding: 10px;
+        padding: 15px;
         border-radius: 15px;
-        border: 2px dashed #FF4B4B;
+        border: 3px dashed #FF4B4B;
+        box-shadow: 0px 4px 0px #FFC1C1;
     }
     @keyframes vibrate {
         0% { transform: translate(0); }
@@ -96,7 +99,7 @@ st.markdown("""
         width: 100%;
     }
     @media (max-width: 768px) {
-        .quiz-box, .reveal-card, .animal-name, .dashboard {
+        .quiz-box, .reveal-card, .animal-name, .dashboard, .hint-box {
             font-size: 5vw !important;
         }
         .stButton>button {
@@ -155,7 +158,7 @@ def press_delete():
 animals_data = {
     "일반": ["🦋 나비", "🐝 꿀벌", "🐞 무당벌레", "🐌 달팽이", "🐜 개미"],
     "희귀": ["🐸 궁금한 개구리", "🦑 오징어징어", "🦐 안녕하새우", "🐡 뾰족 복어", "🐢 조용한 거북이"],
-    "전설": ["🐳 물 뿜는 거대 고래", "🌈🐠 레인보우 열대어", "🦈 아기상어", "💎🐟 보석 물고기", "🦖 티라노사우루스"]
+    "전설": ["🐳 물 뿜는 거대 고래", "🌈🐠 레인보우 열대어", "🦈 심해의 메가로돈", "💎🐟 보석 물고기", "🦖 티라노사우루스"]
 }
 
 # 4. 상점 가챠 로직
@@ -212,15 +215,26 @@ if st.session_state.gacha_step == "idle":
     p_ans = str(st.session_state.inputs[0]) if len(st.session_state.inputs) >= 1 else " ? "
     st.markdown(f"<div class='quiz-box'>{st.session_state.dividend} ÷ {st.session_state.divisor} = [ {p_ans} ]</div>", unsafe_allow_html=True)
 
-    # 💡 [변경포인트] 오답을 적었을 때, 퀴즈 박스 아래에 연관 곱셈식 힌트를 출력합니다.
+    # 💡 [핵심수정] 힌트 상태일 때 화면에 완벽하게 고정 렌더링
     if st.session_state.status == "hint":
         div_num = st.session_state.divisor
         ans_num = st.session_state.correct_answer
         total_num = st.session_state.dividend
-        st.markdown(f"<div class='hint-box'>💡 힌트 곱셈식: {div_num} × {ans_num} = {total_num}</div>", unsafe_allow_html=True)
+        
+        st.markdown(f"<div class='hint-box'>💡 구구단 힌트: {div_num} × {ans_num} = {total_num}</div>", unsafe_allow_html=True)
+        st.error("❌ 틀렸습니다! 곱셈 관계를 생각하며 다시 풀어보세요.")
+        
+        # 화면에 힌트와 경고창을 다 띄운 시점에서 2.8초간 대기합니다.
+        time.sleep(2.8) 
+        
+        # 대기가 끝나면 데이터를 초기화하고 즉시 다음 화면으로 리프레시합니다.
+        st.session_state.inputs = []
+        st.session_state.status = "playing"
+        st.session_state.is_answered = False 
+        st.rerun()
 
     # 키패드 고정 렌더링
-    if st.session_state.status in ["playing", "hint"]:
+    if st.session_state.status == "playing":
         keypad = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
         for row in keypad:
             cols = st.columns(3, gap="small")
@@ -237,9 +251,9 @@ if st.session_state.gacha_step == "idle":
                   on_click=press_delete)
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # 🔍 정답 검증 (숫자 하나가 입력되면 자동 판정)
-    if len(st.session_state.inputs) == 1 and st.session_state.is_answered:
-        time.sleep(0.5)
+    # 🔍 정답 검증 (숫자 하나가 입력되면 즉시 발동)
+    if len(st.session_state.inputs) == 1 and st.session_state.is_answered and st.session_state.status == "playing":
+        time.sleep(0.4)
         user_answer = st.session_state.inputs[0]
         
         if user_answer == st.session_state.correct_answer:
@@ -252,12 +266,7 @@ if st.session_state.gacha_step == "idle":
             next_question()
             st.rerun()
         else:
-            # 💡 틀렸을 시 처리 변경: 빨간색 곱셈식 박스를 2.8초 동안 노출하고 다시 풀게 함
-            st.error("❌ 틀렸습니다! 아래 곱셈 힌트를 확인해 보세요.")
+            # 💡 오답일 경우 즉시 '힌트 상태'로 바꾸고 리런하여 화면을 먼저 강제로 그리게 만듭니다.
             st.session_state.status = "hint"
-            time.sleep(2.8) # 곱셈식을 머릿속으로 읽어볼 충분한 시간을 줍니다.
-            
-            st.session_state.inputs = []      # 입력창 초기화
-            st.session_state.status = "playing" # 다시 플레이 상태로
-            st.session_state.is_answered = False 
             st.rerun()
+            
