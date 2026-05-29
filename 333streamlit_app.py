@@ -33,7 +33,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<div class='main-title'>🥚신비의 수학 대모험 선택 화면🎲</div>", unsafe_allow_html=True)
+st.markdown("<div class='main-title' style='white-space: nowrap;'>🥚신비의 수학 대모험 선택 화면🎲</div>", unsafe_allow_html=True)
 st.write("원하는 게임을 선택하세요!")
 
 # 역곱셈 게임 버튼
