@@ -114,12 +114,14 @@ if 'gold' not in st.session_state:
     st.session_state.factor1 = random.randint(2, 9)
     st.session_state.factor2 = random.randint(2, 9)
     st.session_state.target_product = st.session_state.factor1 * st.session_state.factor2
+    st.session_state.is_answered = False # 💡 중복 채점 방지용 상태 추가
 
 def next_question():
     st.session_state.factor1 = random.randint(2, 9)
     st.session_state.factor2 = random.randint(2, 9)
     st.session_state.target_product = st.session_state.factor1 * st.session_state.factor2
     st.session_state.inputs, st.session_state.status = [], "playing"
+    st.session_state.is_answered = False # 💡 다음 문제로 넘어가면 잠금 해제
 
 # 3. 동물 데이터
 animals_data = {
@@ -184,7 +186,8 @@ if st.session_state.gacha_step == "idle":
     st.markdown(f"<div class='quiz-box'>{st.session_state.target_product} = [ {p1} ] × [ {p2} ]</div>", unsafe_allow_html=True)
 
     # 키패드 (항상 3x3: PC/모바일 동일)
-    if st.session_state.status in ["playing", "hint"]:
+    # 💡 정답 처리 중(is_answered == True)일 때는 버튼 입력을 막아 추가 중복 입력을 원천 차단합니다.
+    if st.session_state.status in ["playing", "hint"] and not st.session_state.is_answered:
         keypad = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
         for row in keypad:
             cols = st.columns(3, gap="small")
@@ -204,9 +207,13 @@ if st.session_state.gacha_step == "idle":
         st.markdown("</div>", unsafe_allow_html=True)
 
     # 정답 검증
-    if len(st.session_state.inputs) == 2:
+    # 💡 is_answered가 False일 때만 검증 실행
+    if len(st.session_state.inputs) == 2 and not st.session_state.is_answered:
+        st.session_state.is_answered = True # 💡 진입하자마자 Lock을 걸어 중복 채점 차단
+        
         time.sleep(0.5)
         ans1, ans2 = st.session_state.inputs
+        
         if ans1 * ans2 == st.session_state.target_product:
             get_gold = random.randint(8, 13)
             st.success(f"✅ 정답! {get_gold} 골드를 얻었습니다! 💰")
@@ -223,4 +230,6 @@ if st.session_state.gacha_step == "idle":
                 st.session_state.inputs = [st.session_state.factor1]
             else:
                 st.session_state.inputs = [st.session_state.factor1]
+            
+            st.session_state.is_answered = False # 💡 오답일 경우 다시 입력해야 하므로 잠금 해제
             st.rerun()
