@@ -38,13 +38,13 @@ st.write("원하는 게임을 선택하세요!")
 
 # 역곱셈 게임 버튼
 st.markdown(
-    '<a class="game-btn" href="https://<YOUR_DOMAIN_OR_STREAMLIT_LINK>/streamlit_app" target="_blank">⚔️ 역곱셈 게임 바로가기</a>',
+    '<a class="game-btn" href="https://calculating-yxucv2tj5bz24odkjqygyr.streamlit.app/" target="_blank">⚔️ 역곱셈 게임 바로가기</a>',
     unsafe_allow_html=True
 )
 
 # 나눗셈 게임 버튼
 st.markdown(
-    '<a class="game-btn" href="https://<YOUR_DOMAIN_OR_STREAMLIT_LINK>/222streamlit_app" target="_blank">🏹 나눗셈 게임 바로가기</a>',
+    '<a class="game-btn" href="https://calculating-fk7wjtmwlzqymtkt7efr94.streamlit.app/" target="_blank">🏹 나눗셈 게임 바로가기</a>',
     unsafe_allow_html=True
 )
 
