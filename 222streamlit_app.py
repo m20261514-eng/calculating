@@ -146,9 +146,9 @@ def press_delete():
 
 # 3. 동물 데이터
 animals_data = {
-    "일반": ["🍼 아기오리", "🐥 병아리", "🐹 햄스터", "🐰 토끼", "🦔 도치"],
-    "희귀": ["🦊 불꽃여우", "🐱 우주고양이", "🦄 페가수스", "🐼 푸바오", "🐨 코알라", "🐺 은빛 늑대"],
-    "전설": ["🐲 황금용", "🦄 レ인보우 유니콘", "🦁 사자왕", "🐋 거대 고래", "🦊 구미호"]
+    "일반": ["🦋 나비", "🐝 꿀벌", "🐞 무당벌레", "🐌 달팽이", "🐜 개미"],
+    "희귀": ["🐸 궁금한 개구리", "🦑 오징어징어", "🦐 안녕하새우", "🐡 뾰족 복어", "🐢 조용한 거북이"],
+    "전설": ["🐳 물 뿜는 거대 고래", "🌈🐠 레인보우 열대어", "🦈 아기상어", "💎🐟 보석 물고기", "🦖 티라노사우루스"]
 }
 
 # 4. 상점 가챠 로직
@@ -157,7 +157,7 @@ def start_gacha():
         st.session_state.gold -= 100
         st.session_state.gacha_step = "shaking"
         rand = random.random()
-        if rand < 0.7: tier = "일반"
+        if rand < 0.8: tier = "일반"
         elif rand < 0.95: tier = "희귀"
         else: tier = "전설"
         st.session_state.revealed_animal = (tier, random.choice(animals_data[tier]))
