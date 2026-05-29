@@ -114,14 +114,16 @@ if 'gold' not in st.session_state:
     st.session_state.factor1 = random.randint(2, 9)
     st.session_state.factor2 = random.randint(2, 9)
     st.session_state.target_product = st.session_state.factor1 * st.session_state.factor2
-    st.session_state.is_answered = False # 💡 중복 채점 방지용 상태 추가
+
+if 'is_answered' not in st.session_state:
+    st.session_state.is_answered = False 
 
 def next_question():
     st.session_state.factor1 = random.randint(2, 9)
     st.session_state.factor2 = random.randint(2, 9)
     st.session_state.target_product = st.session_state.factor1 * st.session_state.factor2
     st.session_state.inputs, st.session_state.status = [], "playing"
-    st.session_state.is_answered = False # 💡 다음 문제로 넘어가면 잠금 해제
+    st.session_state.is_answered = False 
 
 # 3. 동물 데이터
 animals_data = {
@@ -186,20 +188,21 @@ if st.session_state.gacha_step == "idle":
     st.markdown(f"<div class='quiz-box'>{st.session_state.target_product} = [ {p1} ] × [ {p2} ]</div>", unsafe_allow_html=True)
 
     # 키패드 (항상 3x3: PC/모바일 동일)
-    # 💡 정답 처리 중(is_answered == True)일 때는 버튼 입력을 막아 추가 중복 입력을 원천 차단합니다.
-    if st.session_state.status in ["playing", "hint"] and not st.session_state.is_answered:
+    # 💡 조건문에서 'and not is_answered'를 빼서 키보드가 투명인간처럼 사라지는 현상을 없앴습니다.
+    if st.session_state.status in ["playing", "hint"]:
         keypad = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
         for row in keypad:
             cols = st.columns(3, gap="small")
             with st.container():
                 for i, val in enumerate(row):
-                    if cols[i].button(str(val), key=f"key_{row[0]}_{val}_{len(st.session_state.inputs)}", use_container_width=True):
+                    # 💡 대신 각 버튼 내부 속성에 'disabled'를 주어 정답 확인 중에는 클릭만 잠금 처리합니다.
+                    if cols[i].button(str(val), key=f"key_{row[0]}_{val}_{len(st.session_state.inputs)}", use_container_width=True, disabled=st.session_state.is_answered):
                         if len(st.session_state.inputs) < 2:
                             st.session_state.inputs.append(val)
                             st.rerun()
         # 마지막 줄 - 지우기 버튼만 단독
         st.markdown('<div class="streamlit-keypad-row">', unsafe_allow_html=True)
-        if st.button("⌫ 지우기", key="del_btn", use_container_width=False):
+        if st.button("⌫ 지우기", key="del_btn", use_container_width=False, disabled=st.session_state.is_answered):
             if len(st.session_state.inputs) > 0:
                 if st.session_state.status == "playing" or (st.session_state.status == "hint" and len(st.session_state.inputs) == 2):
                     st.session_state.inputs.pop()
@@ -207,9 +210,8 @@ if st.session_state.gacha_step == "idle":
         st.markdown("</div>", unsafe_allow_html=True)
 
     # 정답 검증
-    # 💡 is_answered가 False일 때만 검증 실행
     if len(st.session_state.inputs) == 2 and not st.session_state.is_answered:
-        st.session_state.is_answered = True # 💡 진입하자마자 Lock을 걸어 중복 채점 차단
+        st.session_state.is_answered = True # 백엔드 연타 방지 락(Lock) 가동
         
         time.sleep(0.5)
         ans1, ans2 = st.session_state.inputs
@@ -231,5 +233,5 @@ if st.session_state.gacha_step == "idle":
             else:
                 st.session_state.inputs = [st.session_state.factor1]
             
-            st.session_state.is_answered = False # 💡 오답일 경우 다시 입력해야 하므로 잠금 해제
+            st.session_state.is_answered = False 
             st.rerun()
