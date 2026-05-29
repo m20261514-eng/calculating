@@ -167,7 +167,7 @@ def start_gacha():
         st.session_state.gold -= 100
         st.session_state.gacha_step = "shaking"
         rand = random.random()
-        if rand < 0.7: tier = "일반"
+        if rand < 0.8: tier = "일반"
         elif rand < 0.95: tier = "희귀"
         else: tier = "전설"
         st.session_state.revealed_animal = (tier, random.choice(animals_data[tier]))
