@@ -20,6 +20,7 @@ st.markdown("""
         border: 5px solid #FFD93D;
         box-shadow: 0px 8px 0px #FFD93D;
         margin-bottom: 25px;
+        margin-top: 0 !important;
     }
     .hint-num { color: #FF4B4B !important; font-weight: bold; }
     @keyframes vibrate {
@@ -203,13 +204,14 @@ elif st.session_state.gacha_step == "revealed":
 
 # 6. 기본 게임 모드
 if st.session_state.gacha_step == "idle":
+    # 상점 expander
     with st.expander("🥚 [신비의 알뽑기 상점 열기]", expanded=False):
         st.write("100골드로 새로운 동물을 깨워보세요!")
         st.button("🔮 알뽑기 시작!", on_click=start_gacha, use_container_width=True)
         if st.session_state.collection:
             st.write(f"내 도감: {' | '.join(st.session_state.collection)}")
 
-    st.write("---")
+    # 문제 칸 (expander 아래 바로 표시)
     p1 = str(st.session_state.inputs[0]) if len(st.session_state.inputs) >= 1 else " ? "
     p2 = str(st.session_state.inputs[1]) if len(st.session_state.inputs) >= 2 else " ? "
     if st.session_state.status == "hint":
