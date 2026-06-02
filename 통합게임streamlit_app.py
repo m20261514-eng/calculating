@@ -87,7 +87,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 메인 타이틀
-st.markdown("<div class='main-title' style='white-space: nowrap;'>🥚신비의 수학 대모험🎲</div>", unsafe_allow_html=True)
+st.markdown("<div class='main-title' style='white-space: nowrap;'>🥚수학 게임 대모험🎲</div>", unsafe_allow_html=True)
 st.markdown("<div class='guide-text'>원하는 게임을 선택하세요!</div>", unsafe_allow_html=True)
 
 # 역곱셈 게임 버튼
