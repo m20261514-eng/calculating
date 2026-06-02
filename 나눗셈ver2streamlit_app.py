@@ -20,6 +20,7 @@ st.markdown("""
         border: 5px solid #FFD93D;
         box-shadow: 0px 8px 0px #FFD93D;
         margin-bottom: 25px;
+        margin-top: 0px;
     }
     .hint-box {
         color: #FF4B4B !important;
@@ -222,8 +223,6 @@ if st.session_state.gacha_step == "idle":
         st.button("🔮 알뽑기 시작!", on_click=start_gacha, use_container_width=True)
         if st.session_state.collection:
             st.write(f"내 도감: {' | '.join(st.session_state.collection)}")
-
-    st.write("---")
     
     # 문제 보여주기 양식 (예: 56 ÷ 7 = [ ? ])
     p_ans = str(st.session_state.inputs[0]) if len(st.session_state.inputs) >= 1 else " ? "
