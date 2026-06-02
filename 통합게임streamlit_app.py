@@ -6,13 +6,13 @@ st.set_page_config(page_title="수학 게임 대모험 메인", page_icon="🎲"
 # CSS 스타일링 (데스크탑 & 모바일 반응형)
 st.markdown("""
     <style>
-    /* 전체 배경 그라데이션 */
+    /* 전체 배경 흰색 단색 */
     [data-testid="stAppViewContainer"] {
-        background: linear-gradient(135deg, #FFFFFF 0%, #FFD93D 100%);
+        background: #FFFFFF;
     }
     
     [data-testid="stMain"] {
-        background: linear-gradient(135deg, #FFFFFF 0%, #FFD93D 100%);
+        background: #FFFFFF;
     }
     
     /* 크로마틱 어버레이션 애니메이션 (마젠타와 시안 분리) */
@@ -31,16 +31,6 @@ st.markdown("""
         }
     }
     
-    /* 부드러운 호흡 애니메이션 (숨 쉬듯 위아래 움직임) */
-    @keyframes breathe {
-        0%, 100% {
-            transform: translateY(0px);
-        }
-        50% {
-            transform: translateY(-15px);
-        }
-    }
-    
     /* 1. 데스크탑 기본 스타일 */
     .main-title {
         font-size: 3rem;
@@ -51,7 +41,7 @@ st.markdown("""
         margin-top: 15px;
         letter-spacing: 2px;
         white-space: nowrap;
-        animation: chromatic-aberration 2s ease-in-out infinite, breathe 3s ease-in-out infinite;
+        animation: chromatic-aberration 2s ease-in-out infinite;
         display: inline-block;
         width: 100%;
     }
