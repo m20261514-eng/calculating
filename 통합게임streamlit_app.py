@@ -6,6 +6,8 @@ st.set_page_config(page_title="수학 게임 대모험 메인", page_icon="🎲"
 # CSS 스타일링 (데스크탑 & 모바일 반응형)
 st.markdown("""
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Comfortaa:wght@700&display=swap');
+    
     /* 전체 배경 그라데이션 */
     [data-testid="stAppViewContainer"] {
         background: linear-gradient(135deg, #FFFFFF 0%, #FFD93D 100%);
@@ -15,16 +17,39 @@ st.markdown("""
         background: linear-gradient(135deg, #FFFFFF 0%, #FFD93D 100%);
     }
     
+    /* 부드러운 호흡 애니메이션 (숨 쉬듯 위아래 움직임) */
+    @keyframes breathe {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-15px);
+        }
+    }
+    
     /* 1. 데스크탑 기본 스타일 */
     .main-title {
-        font-size: 3rem;
-        font-weight: bold;
-        color: #156580;
+        font-family: 'Fredoka', 'Comfortaa', sans-serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #FF6B9D 0%, #FFA07A 25%, #FFD700 50%, #FF69B4 75%, #FF6B9D 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         text-align: center;
         margin-bottom: 35px;
         margin-top: 15px;
-        letter-spacing: 2px;
-        white-space: nowrap; /* 데스크탑에서는 한 줄 유지 */
+        letter-spacing: 3px;
+        white-space: nowrap;
+        text-shadow: 
+            2px 2px 0px rgba(255, 105, 180, 0.3),
+            4px 4px 0px rgba(255, 160, 122, 0.2),
+            6px 6px 0px rgba(255, 215, 0, 0.2),
+            8px 8px 15px rgba(0, 0, 0, 0.15);
+        filter: drop-shadow(0 5px 10px rgba(255, 105, 180, 0.3));
+        animation: breathe 3s ease-in-out infinite;
+        display: inline-block;
+        width: 100%;
     }
     
     .guide-text {
@@ -62,32 +87,33 @@ st.markdown("""
     /* 2. 모바일 대응 (화면 너비 600px 이하일 때 적용) */
     @media (max-width: 600px) {
         .main-title {
-            font-size: 1.6rem !important; /* 폰트 크기 축소 */
-            white-space: normal !important; /* 자동 줄바꿈 허용 */
-            word-break: keep-all; /* 단어 단위로 줄바꿈 (가독성 향상) */
+            font-size: 2rem !important;
+            white-space: nowrap !important;
+            word-break: keep-all;
             margin-bottom: 20px !important;
+            letter-spacing: 1.5px;
         }
         .game-btn {
-            width: 95% !important; /* 화면을 꽉 채우도록 넓이 확장 */
-            font-size: 1.3rem !important; /* 폰트 크기 축소 */
-            padding: 15px 0 !important; /* 위아래 여백 축소 */
+            width: 95% !important;
+            font-size: 1.3rem !important;
+            padding: 15px 0 !important;
             margin: 12px auto !important;
         }
         
         /* Streamlit 컬럼이 모바일에서 세로로 쌓이는 현상 방지 (3x3 배열 강제 유지) */
         div[data-testid="column"] {
-            min-width: 0 !important; /* 최소 넓이 해제 */
+            min-width: 0 !important;
         }
         div[data-testid="stHorizontalBlock"] {
-            flex-wrap: nowrap !important; /* 컬럼들이 가로로 유지되도록 고정 */
-            gap: 5px !important; /* 버튼 사이 간격 좁히기 */
+            flex-wrap: nowrap !important;
+            gap: 5px !important;
         }
     }
     </style>
 """, unsafe_allow_html=True)
 
 # 메인 타이틀
-st.markdown("<div class='main-title' style='white-space: nowrap;'>🥚수학 게임 대모험🎲</div>", unsafe_allow_html=True)
+st.markdown("<div class='main-title'>🥚수학 게임 대모험🎲</div>", unsafe_allow_html=True)
 st.markdown("<div class='guide-text'>원하는 게임을 선택하세요!</div>", unsafe_allow_html=True)
 
 # 역곱셈 게임 버튼
