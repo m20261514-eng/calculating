@@ -87,19 +87,3 @@ st.markdown(
 )
 
 st.info("새 창(탭)에서 열립니다. 두 게임 모두 종료 후에는 이 페이지로 다시 돌아오세요!")
-
-st.divider() # 시각적 분리를 위한 선
-
-# 3x3 숫자 버튼 배열 생성
-st.write("🔢 **숫자 입력 패드**")
-
-# 1부터 9까지 3x3 구조로 반복하여 버튼 생성
-for i in range(0, 9, 3):
-    cols = st.columns(3) # 3개의 컬럼 생성
-    for j in range(3):
-        num = i + j + 1
-        with cols[j]:
-            # use_container_width=True로 버튼이 컬럼 너비에 꽉 차게 설정
-            if st.button(str(num), use_container_width=True):
-                # 버튼을 클릭했을 때 동작할 코드를 아래에 작성하세요.
-                st.toast(f"{num}번 버튼을 클릭했습니다!")
