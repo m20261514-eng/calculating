@@ -6,6 +6,15 @@ st.set_page_config(page_title="수학 게임 대모험 메인", page_icon="🎲"
 # CSS 스타일링 (데스크탑 & 모바일 반응형)
 st.markdown("""
     <style>
+    /* 전체 배경 그라데이션 */
+    [data-testid="stAppViewContainer"] {
+        background: linear-gradient(135deg, #FFFFFF 0%, #FFD93D 100%);
+    }
+    
+    [data-testid="stMain"] {
+        background: linear-gradient(135deg, #FFFFFF 0%, #FFD93D 100%);
+    }
+    
     /* 1. 데스크탑 기본 스타일 */
     .main-title {
         font-size: 3rem;
@@ -50,11 +59,6 @@ st.markdown("""
             white-space: normal !important; /* 자동 줄바꿈 허용 */
             word-break: keep-all; /* 단어 단위로 줄바꿈 (가독성 향상) */
             margin-bottom: 20px !important;
-            margin-left: -999px !important;
-            margin-right: -999px !important;
-            padding: 30px 15px !important;
-            background: linear-gradient(135deg, #FFFFFF 0%, #FFD93D 100%) !important;
-            border-radius: 15px;
         }
         .game-btn {
             width: 95% !important; /* 화면을 꽉 채우도록 넓이 확장 */
