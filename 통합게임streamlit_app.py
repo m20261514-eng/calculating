@@ -6,7 +6,7 @@ st.set_page_config(page_title="수학 게임 대모험 메인", page_icon="🎲"
 # CSS 스타일링 (데스크탑 & 모바일 반응형)
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Comfortaa:wght@700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
     
     /* 전체 배경 그라데이션 */
     [data-testid="stAppViewContainer"] {
@@ -15,6 +15,22 @@ st.markdown("""
     
     [data-testid="stMain"] {
         background: linear-gradient(135deg, #FFFFFF 0%, #FFD93D 100%);
+    }
+    
+    /* 크로마틱 어버레이션 애니메이션 (마젠타와 시안 분리) */
+    @keyframes chromatic-aberration {
+        0%, 100% {
+            text-shadow: 
+                -2px 0 #FF00FF,
+                2px 0 #00FFFF,
+                0 0 30px rgba(0, 0, 0, 0.5);
+        }
+        50% {
+            text-shadow: 
+                -3px 0 #FF00FF,
+                3px 0 #00FFFF,
+                0 0 30px rgba(0, 0, 0, 0.5);
+        }
     }
     
     /* 부드러운 호흡 애니메이션 (숨 쉬듯 위아래 움직임) */
@@ -29,27 +45,20 @@ st.markdown("""
     
     /* 1. 데스크탑 기본 스타일 */
     .main-title {
-        font-family: 'Fredoka', 'Comfortaa', sans-serif;
+        font-family: 'Press Start 2P', cursive;
         font-size: 3.5rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #000033 0%, #001155 25%, #FFD700 50%, #000033 75%, #000033 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: #000000;
         text-align: center;
         margin-bottom: 35px;
         margin-top: 15px;
-        letter-spacing: 3px;
+        letter-spacing: 2px;
         white-space: nowrap;
-        text-shadow: 
-            2px 2px 0px rgba(0, 0, 51, 0.4),
-            4px 4px 0px rgba(0, 17, 85, 0.3),
-            6px 6px 0px rgba(255, 215, 0, 0.25),
-            8px 8px 15px rgba(0, 0, 0, 0.25);
-        filter: drop-shadow(0 5px 10px rgba(0, 0, 51, 0.4)) drop-shadow(0 3px 5px rgba(255, 215, 0, 0.3));
-        animation: breathe 3s ease-in-out infinite;
+        animation: chromatic-aberration 2s ease-in-out infinite, breathe 3s ease-in-out infinite;
         display: inline-block;
         width: 100%;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
     }
     
     .guide-text {
@@ -87,11 +96,11 @@ st.markdown("""
     /* 2. 모바일 대응 (화면 너비 600px 이하일 때 적용) */
     @media (max-width: 600px) {
         .main-title {
-            font-size: 2rem !important;
+            font-size: 1.8rem !important;
             white-space: nowrap !important;
             word-break: keep-all;
             margin-bottom: 20px !important;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
         }
         .game-btn {
             width: 95% !important;
