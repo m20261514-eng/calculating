@@ -6,8 +6,6 @@ st.set_page_config(page_title="수학 게임 대모험 메인", page_icon="🎲"
 # CSS 스타일링 (데스크탑 & 모바일 반응형)
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-    
     /* 전체 배경 그라데이션 */
     [data-testid="stAppViewContainer"] {
         background: linear-gradient(135deg, #FFFFFF 0%, #FFD93D 100%);
@@ -45,9 +43,8 @@ st.markdown("""
     
     /* 1. 데스크탑 기본 스타일 */
     .main-title {
-        font-family: 'Press Start 2P', cursive;
-        font-size: 3.5rem;
-        font-weight: 700;
+        font-size: 3rem;
+        font-weight: bold;
         color: #000000;
         text-align: center;
         margin-bottom: 35px;
@@ -57,8 +54,6 @@ st.markdown("""
         animation: chromatic-aberration 2s ease-in-out infinite, breathe 3s ease-in-out infinite;
         display: inline-block;
         width: 100%;
-        image-rendering: pixelated;
-        image-rendering: crisp-edges;
     }
     
     .guide-text {
@@ -96,11 +91,10 @@ st.markdown("""
     /* 2. 모바일 대응 (화면 너비 600px 이하일 때 적용) */
     @media (max-width: 600px) {
         .main-title {
-            font-size: 1.8rem !important;
-            white-space: nowrap !important;
+            font-size: 1.6rem !important;
+            white-space: normal !important;
             word-break: keep-all;
             margin-bottom: 20px !important;
-            letter-spacing: 1px;
         }
         .game-btn {
             width: 95% !important;
