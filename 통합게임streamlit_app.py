@@ -32,7 +32,7 @@ st.markdown("""
         font-family: 'Fredoka', 'Comfortaa', sans-serif;
         font-size: 3.5rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #FF6B9D 0%, #FFA07A 25%, #FFD700 50%, #FF69B4 75%, #FF6B9D 100%);
+        background: linear-gradient(135deg, #000033 0%, #001155 25%, #FFD700 50%, #000033 75%, #000033 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -42,11 +42,11 @@ st.markdown("""
         letter-spacing: 3px;
         white-space: nowrap;
         text-shadow: 
-            2px 2px 0px rgba(255, 105, 180, 0.3),
-            4px 4px 0px rgba(255, 160, 122, 0.2),
-            6px 6px 0px rgba(255, 215, 0, 0.2),
-            8px 8px 15px rgba(0, 0, 0, 0.15);
-        filter: drop-shadow(0 5px 10px rgba(255, 105, 180, 0.3));
+            2px 2px 0px rgba(0, 0, 51, 0.4),
+            4px 4px 0px rgba(0, 17, 85, 0.3),
+            6px 6px 0px rgba(255, 215, 0, 0.25),
+            8px 8px 15px rgba(0, 0, 0, 0.25);
+        filter: drop-shadow(0 5px 10px rgba(0, 0, 51, 0.4)) drop-shadow(0 3px 5px rgba(255, 215, 0, 0.3));
         animation: breathe 3s ease-in-out infinite;
         display: inline-block;
         width: 100%;
