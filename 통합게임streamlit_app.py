@@ -50,6 +50,11 @@ st.markdown("""
             white-space: normal !important; /* 자동 줄바꿈 허용 */
             word-break: keep-all; /* 단어 단위로 줄바꿈 (가독성 향상) */
             margin-bottom: 20px !important;
+            margin-left: -999px !important;
+            margin-right: -999px !important;
+            padding: 30px 15px !important;
+            background: linear-gradient(135deg, #FFFFFF 0%, #FFD93D 100%) !important;
+            border-radius: 15px;
         }
         .game-btn {
             width: 95% !important; /* 화면을 꽉 채우도록 넓이 확장 */
