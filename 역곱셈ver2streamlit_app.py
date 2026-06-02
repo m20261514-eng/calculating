@@ -87,6 +87,12 @@ st.markdown("""
 
     /* 🔥 [핵심] 모바일 화면에서 st.columns가 세로로 깨지는 현상 방지 */
     @media (max-width: 768px) {
+        h1 {
+            font-size: 5.5vw !important;
+            line-height: 1.2 !important;
+            white-space: normal !important;
+            word-wrap: break-word !important;
+        }
         .quiz-box, .reveal-card, .animal-name, .dashboard {
             font-size: 5vw !important;
         }
