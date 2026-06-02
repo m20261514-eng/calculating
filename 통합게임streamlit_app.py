@@ -6,13 +6,18 @@ st.set_page_config(page_title="수학 게임 대모험 메인", page_icon="🎲"
 # CSS 스타일링 (데스크탑 & 모바일 반응형)
 st.markdown("""
     <style>
-    /* 전체 배경 흰색 단색 */
+    /* 전체 배경 크림색 */
+    .stApp {
+        background-color: #FFFDF0;
+        color: #222222;
+    }
+    
     [data-testid="stAppViewContainer"] {
-        background: #FFFFFF;
+        background: #FFFDF0;
     }
     
     [data-testid="stMain"] {
-        background: #FFFFFF;
+        background: #FFFDF0;
     }
     
     /* 크로마틱 어버레이션 애니메이션 (마젠타와 시안 분리) */
