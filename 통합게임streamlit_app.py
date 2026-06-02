@@ -102,4 +102,4 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.info("새 창(탭)에서 열립니다. 두 게임 모두 종료 후에는 이 페이지로 다시 돌아오세요!")
+st.info("새 창(탭)에서 열립니다.")
