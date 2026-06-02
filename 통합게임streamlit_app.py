@@ -26,6 +26,13 @@ st.markdown("""
         letter-spacing: 2px;
         white-space: nowrap; /* 데스크탑에서는 한 줄 유지 */
     }
+    
+    .guide-text {
+        color: #156580 !important;
+        font-weight: bold;
+        text-align: center;
+    }
+    
     .game-btn {
         display: block;
         width: 80%;
@@ -81,7 +88,7 @@ st.markdown("""
 
 # 메인 타이틀
 st.markdown("<div class='main-title' style='white-space: nowrap;'>🥚신비의 수학 대모험🎲</div>", unsafe_allow_html=True)
-st.write("원하는 게임을 선택하세요!")
+st.markdown("<div class='guide-text'>원하는 게임을 선택하세요!</div>", unsafe_allow_html=True)
 
 # 역곱셈 게임 버튼
 st.markdown(
